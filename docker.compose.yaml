@@ -19,9 +19,11 @@ services:
   kafka1:
     image: wurstmeister/kafka
     container_name: kafka
+    depends_on:
+      - zookeeper1  # Ensure Zookeeper is started before Kafka
     ports:
       - 9092:9092
     environment:
       KAFKA_ADVERTISED_HOST_NAME: localhost
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181  # Use the container name as the hostname
       KAFKA_CREATE_TOPIC: "my_topic:1:3"
