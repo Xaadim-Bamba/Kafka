@@ -2,6 +2,7 @@ package com.xaadim.kafkamessaging.configuration;
 
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.xaadim.kafkamessaging.constants.AppConstants;
+import lombok.Getter;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,56 +16,27 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 @EnableKafka
 @Configuration
+@Getter
 public class KafkaConsumerConfig {
+    Map<String, String> lastProcessedMessage;
 
-
-   /* @KafkaListener(topics="my_topic", groupId="my_group_id")
-    @Bean
-    public ConsumerFactory<String, String> consumerFactory( ) {
-        Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, AppConstants.HOST);
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), new org.springframework.kafka.support.serializer.JsonDeserializer<>());
-    }
-
-
-    public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListnerFactory(String groupId) {
-
-        ConcurrentKafkaListenerContainerFactory<String, String> factory =
-                new ConcurrentKafkaListenerContainerFactory<>();
-
-        factory.setConsumerFactory(consumerFactory());
-
-        return factory;
-    }
-
-
-    @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory( ) {
-        ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
-                factory.setConsumerFactory(consumerFactory ());
-        return factory;
-    }
-    @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, String> mobileContainerFactory() {
-        return kafkaListenerContainerFactory();
-    }
-
-    */
-
-
-
-   @KafkaListener(topics="my_topic", groupId="my_group_id")
+    @KafkaListener(topics="my_topic", groupId="my_group_id")
     public void getMessage(String message){
+       System.out.println(message);
+       Map<String, String> map = new HashMap<>();
+       StringTokenizer tokenizer = new StringTokenizer(message, " ");
 
-        System.out.println(message);
-
-    }
-
+       while (tokenizer.hasMoreTokens()) {
+           String token = tokenizer.nextToken();
+           String[] keyValue = token.split("=");
+           map.put(keyValue[0], keyValue[1]);
+       }
+       lastProcessedMessage = map;
+   }
 
 
 }

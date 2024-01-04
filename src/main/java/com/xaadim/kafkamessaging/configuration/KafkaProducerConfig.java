@@ -21,28 +21,6 @@ import java.util.Map;
 @EnableKafka
 @Configuration
 public class KafkaProducerConfig {
-
-   /* public NewTopic createTopic(){
-        return new NewTopic("my_topic", 3, (short) 1);
-    }
-
-
-    @Bean
-    public ProducerFactory<String, Message> producerFactory() {
-        Map<String , Object> configProps= new HashMap<>();
-        configProps. put (ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, AppConstants.HOST) ;
-        configProps. put (ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        configProps. put (ProducerConfig. VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        return new DefaultKafkaProducerFactory<>(configProps) ;
-    }
-
-    @Bean
-    public KafkaTemplate<String, Message> kafkaTemplate() { return new KafkaTemplate<>(producerFactory()); }
-
-
-    /*
-
-    */
     private static final String TOPIC= "my_topic";
 
     @Autowired
@@ -52,12 +30,7 @@ public class KafkaProducerConfig {
         this.kafkaTemplate.send(TOPIC, msg);
     }
 
-    public void sendMessage(String key, String senderNumber, String recipientNumber, String bodyMessage) {
-
-        String msg = key + " " + senderNumber + " " + recipientNumber + " " + bodyMessage;
-
-            this.kafkaTemplate.send(TOPIC, msg);
-
+    public void sendMessage(String source, String dest, String textMessage) {
+        this.kafkaTemplate.send(TOPIC, "source="+source+" dest="+dest+" textMessage="+textMessage);
     }
-
 }

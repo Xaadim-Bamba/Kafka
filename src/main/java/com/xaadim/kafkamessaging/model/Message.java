@@ -10,9 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class Message {
-
     private String textMessage;
     private String  source;
     private String  dest;
-
 }
